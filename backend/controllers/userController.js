@@ -2,6 +2,7 @@ import User from '../models/userModel.js'
 import asyncHandler from 'express-async-handler'
 import generateToken from '../utils/generateToken.js'
 import Passage from '../models/passageModel.js'
+import testpassages from '../models/testModel.js'
 // @desc Auth user & get token
 // @route POST /api/user/login
 // @access Public
@@ -113,7 +114,15 @@ const updateUserProfile = asyncHandler(async (req, res) => {
 })
 
 const updatePassageInfo = asyncHandler(async (req, res) => {
-  // const passage = await Passage.find({passage: req.body.passage})
+  const passage = await Passage.find({"paragraphs.context": req.body.passage});
+  console.log(passage);
+  if (passage[0].paragraphs.isAnnotated){
+    res.status(400).send({
+      Status: 'failed',
+      message: 'This passage has already been annotated, kindly get another paragraph.'
+    })
+  }
+
   if (!req.body.passage) {
     res.status(400).send({
       Status: 'failed',
@@ -126,44 +135,54 @@ const updatePassageInfo = asyncHandler(async (req, res) => {
       message: 'no fields sent!',
     })
   }
-  const doc = await Passage.findOneAndUpdate(
-    { passage: req.body.passage },
-    {
-      $push: { fields: req.body.fields },
-    }
-  )
 
-  await doc.save()
+  passage[0].paragraphs.isAnnotated = true;
 
-  if (doc) {
-    const user = await User.findById(req.body.user)
-    var x = user.completedPassages
-    console.log(x)
-    const userUpdated = await User.updateOne(
-      { _id: req.body.user },
-      { completedPassages: x + 1 }
-    )
-    // await userUpdated.save();
-    if (user) {
-      res.json({
-        doc: doc,
-      })
-    } else {
-      res.status(500).send({
-        Status: 'failed',
-        message: 'user count could not be updated',
-      })
-    }
-  } else {
-    res.status(404)
-    throw new Error('Passage not found')
-  }
+  await passage[0].save();
+
+  res.send({
+    message:"Succesful"
+  })
+  // const doc = await Passage.findOneAndUpdate(
+  //   { passage: req.body.passage },
+  //   {
+  //     $push: { fields: req.body.fields },
+  //   }
+  // )
+
+  // await doc.save();
+
+  // if (doc) {
+  //   const user = await User.findById(req.body.user)
+  //   var x = user.completedPassages
+  //   console.log(x)
+  //   const userUpdated = await User.updateOne(
+  //     { _id: req.body.user },
+  //     { completedPassages: x + 1 }
+  //   )
+  //   // await userUpdated.save();
+  //   if (user) {
+  //     res.json({
+  //       doc: doc,
+  //     })
+  //   } else {
+  //     res.status(500).send({
+  //       Status: 'failed',
+  //       message: 'user count could not be updated',
+  //     })
+  //   }
+  // } else {
+  //   res.status(404)
+  //   throw new Error('Passage not found')
+  // }
 })
+
+
 const getPassage = asyncHandler(async (req, res) => {
   Passage.count().exec(async function (err, count) {
     var random = Math.floor(Math.random() * count)
 
-    Passage.findOne()
+    Passage.findOne({"paragraphs.isAnnotated": false})
       .skip(random)
       .exec(function (err, result) {
         if (err) {

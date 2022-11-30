@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const passageSchema = mongoose.Schema(
   {
@@ -17,13 +17,15 @@ const passageSchema = mongoose.Schema(
       qas: [
         {
           question: String,
-          question_group: String,
+          // question_group: String,
           id: Number,
-          answer: String,
-          answer_start: Number,
-          answer_type: String,
-          answer_entity: String,
-          is_impossible: Boolean,
+          answers: {
+            answer: String,
+            answer_start: Number,
+            answer_type: String,
+            answer_entity: String,
+            is_impossible: Boolean,
+          },
         },
       ],
     },
@@ -31,8 +33,8 @@ const passageSchema = mongoose.Schema(
   {
     timestamps: true,
   }
-);
+)
 
-const Passage = mongoose.model("Passage", passageSchema);
+const testpassages = mongoose.model('testpassages', passageSchema)
 
-export default Passage;
+export default testpassages

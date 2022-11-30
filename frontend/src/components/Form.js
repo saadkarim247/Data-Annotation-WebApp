@@ -35,8 +35,9 @@ const FormPage = () => {
 
     axios(config)
       .then(async function (response) {
-        await setPassage(response.data.passage)
-        await setPassageType(response.data.passage_type[0])
+        console.log(response);
+        await setPassage(response.data.paragraphs.context);
+        await setPassageType(response.data.paragraphs.passage_type); 
         setFields([
           {
             id: 0,
@@ -80,29 +81,29 @@ const FormPage = () => {
   }
 
   const handleSubmit = () => {
-    var axios = require('axios')
-    var data = JSON.stringify({
-      user: JSON.parse(localStorage.getItem('userInfo'))._id,
-      passage: passage,
-      fields: fields,
-    })
+    // var axios = require('axios')
+    // var data = JSON.stringify({
+    //   user: JSON.parse(localStorage.getItem('userInfo'))._id,
+    //   passage: passage,
+    //   fields: fields,
+    // })
 
-    var config = {
-      method: 'post',
-      url: 'http://localhost:5000/api/users/updatePassageInfo',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      data: data,
-    }
+    // var config = {
+    //   method: 'post',
+    //   url: 'http://localhost:5000/api/users/updatePassageInfo',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   data: data,
+    // }
 
-    axios(config)
-      .then(function (response) {
-        setEorS('Submitted!')
-      })
-      .catch(function (error) {
-        setEorS('Error')
-      })
+    // axios(config)
+    //   .then(function (response) {
+    //     setEorS('Submitted!')
+    //   })
+    //   .catch(function (error) {
+    //     setEorS('Error')
+    //   })
 
     console.log({ passage: passage, fields: fields })
   }
