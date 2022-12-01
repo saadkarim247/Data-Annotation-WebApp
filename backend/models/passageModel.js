@@ -12,14 +12,15 @@ const passageSchema = mongoose.Schema(
         required: true,
       },
       passage_type: String,
+      comprehension_level: String,
       isAnnotated: Boolean,
-      // passage_level: String,
       qas: [
         {
-          question: String,
-          question_group: String,
           id: Number,
+          question: String,
           answer: String,
+          question_group: String,
+          question_type: String,
           answer_start: Number,
           answer_type: String,
           answer_entity: String,
