@@ -146,6 +146,7 @@ const updatePassageInfo = asyncHandler(async (req, res) => {
           "This passage has already been annotated, kindly get another paragraph.",
       });
     } else {
+      var length = req.body.fields.length;
       passage[0].paragraphs.qas = req.body.fields;
       passage[0].paragraphs.comprehension_level = req.body.comprehension_level;
       passage[0].paragraphs.isAnnotated = true;
@@ -154,15 +155,16 @@ const updatePassageInfo = asyncHandler(async (req, res) => {
 
       const user = await User.findById(req.body.user);
       var x = user.completedPassages;
+      var y = user.completedQuestions;
       console.log(x);
       const userUpdated = await User.updateOne(
         { _id: req.body.user },
-        { completedPassages: x + 1 }
+        { completedPassages: x + 1, completedQuestions: y + length }
       );
       // await userUpdated.save();
       if (user) {
         res.json({
-          message: "Successfully posted data!" ,
+          message: "Successfully posted data!",
         });
       } else {
         res.status(500).send({
@@ -175,7 +177,6 @@ const updatePassageInfo = asyncHandler(async (req, res) => {
     res.status(404);
     throw new Error("Passage not found");
   }
-  
 });
 
 const getPassage = asyncHandler(async (req, res) => {

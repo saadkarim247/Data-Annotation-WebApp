@@ -48,7 +48,7 @@ const FormPage = () => {
 
     axios(config)
       .then(async function (response) {
-        console.log(response);
+        // console.log(response);
         setPassage(response.data.paragraphs.context);
         setPassageType(response.data.paragraphs.passage_type);
         setFields([
@@ -74,7 +74,7 @@ const FormPage = () => {
     setFields([
       ...fields,
       {
-        id: id + 1,
+        id: fields.length,
         question: "",
         answer: "",
         question_group: "",
@@ -98,7 +98,7 @@ const FormPage = () => {
   };
 
   const handleSubmit = () => {
-    // var axios = require('axios')
+    var axios = require('axios')
     var data = JSON.stringify({
       user: JSON.parse(localStorage.getItem('userInfo'))._id,
       passage: passage,
