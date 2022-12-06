@@ -98,31 +98,38 @@ const FormPage = () => {
   };
 
   const handleSubmit = () => {
-    var axios = require('axios')
+    var fields2 = fields;
+
+    for (var i = 0; i < fields2.length; i++) {
+      var indexOfAnswer = passage.indexOf(fields2[i].answer);
+      fields2[i].answer_start = indexOfAnswer;
+    }
+    setFields(fields2);
+
     var data = JSON.stringify({
-      user: JSON.parse(localStorage.getItem('userInfo'))._id,
+      user: JSON.parse(localStorage.getItem("userInfo"))._id,
       passage: passage,
       passage_type: passageType,
       comprehension_level: cpLevel,
       fields: fields,
-    })
+    });
 
     var config = {
-      method: 'post',
-      url: 'http://localhost:5000/api/users/updatePassageInfo',
+      method: "post",
+      url: "http://localhost:5000/api/users/updatePassageInfo",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       data: data,
-    }
+    };
 
     axios(config)
       .then(function (response) {
-        setEorS('Submitted!')
+        setEorS("Submitted!");
       })
       .catch(function (error) {
-        setEorS('Error')
-      })
+        setEorS("Error");
+      });
 
     console.log({
       passage: passage,
